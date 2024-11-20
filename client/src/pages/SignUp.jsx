@@ -2,13 +2,7 @@ import { useState } from "react";
 import { Link } from "react-router-dom";
 
 function SignUp() {
-    const [formData, setFormData] = useState({
-        firstName: '',
-        lastName: '',
-        username: '',
-        email: '',
-        password: '',
-    });
+    const [formData, setFormData] = useState({});
 
     const handleChange = (e) => {
         setFormData({ ...formData, [e.target.id]: e.target.value });
@@ -16,28 +10,24 @@ function SignUp() {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-        
-        // Optional: Client-side validation
-        if (!formData.firstName || !formData.lastName || !formData.username || !formData.email || !formData.password) {
-            alert("Please fill out all fields");
-            return;
-        }
-
+    
         try {
-            const res = await fetch('/api/auth/sign-up', {
+            const res = await fetch('http://localhost:4010/api/auth/signup', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify(formData),
             });
+    
             const data = await res.json();
+    
             if (res.ok) {
-                alert("Sign-up successful!");
+                alert(data.message); // Notify user on success
             } else {
-                alert(`Sign-up failed: ${data.message}`);
+                alert(data.message || 'Something went wrong. Please try again.');
             }
         } catch (error) {
-            console.error("Error signing up:", error);
-            alert("An error occurred. Please try again later.");
+            console.error('Error during sign-up:', error);
+            alert('An error occurred. Please try again.');
         }
     };
 
@@ -49,36 +39,8 @@ function SignUp() {
 
             <form
                 onSubmit={handleSubmit}
-                className="flex flex-col gap-5 p-8 bg-white rounded-lg shadow-lg w-full max-w-lg"
+                className="flex flex-col gap-5 p-8 bg-white text-black rounded-lg shadow-lg w-full max-w-lg"
             >
-                <div className="flex flex-col gap-1">
-                    <label htmlFor="firstName" className="text-gray-700 font-medium">
-                        First Name:
-                    </label>
-                    <input
-                        type="text"
-                        id="firstName"
-                        value={formData.firstName}
-                        onChange={handleChange}
-                        placeholder="Bammy"
-                        className="p-3 bg-gray-50 border rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500"
-                    />
-                </div>
-
-                <div className="flex flex-col gap-1">
-                    <label htmlFor="lastName" className="text-gray-700 font-medium">
-                        Last Name:
-                    </label>
-                    <input
-                        type="text"
-                        id="lastName"
-                        value={formData.lastName}
-                        onChange={handleChange}
-                        placeholder="Toye"
-                        className="p-3 bg-gray-50 border rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500"
-                    />
-                </div>
-
                 <div className="flex flex-col gap-1">
                     <label htmlFor="username" className="text-gray-700 font-medium">
                         Username:
