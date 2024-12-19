@@ -1,38 +1,67 @@
 import { useState } from "react";
 import { Link } from "react-router-dom";
+import { LuEye, LuEyeClosed } from "react-icons/lu";
+import Modal from '../components/Modal';
 
 function SignUp() {
-    const [formData, setFormData] = useState({});
+    const [formData, setFormData] = useState({ username: '', email: '', password: '' });
+    const [showPassword, setShowPassword] = useState(false);
+    const [modalOpen, setModalOpen] = useState(false);
+    const [modalMessage, setModalMessage] = useState('');
+    const [inputErrors, setInputErrors] = useState({ username: false, email: false, password: false });
 
     const handleChange = (e) => {
-        setFormData({ ...formData, [e.target.id]: e.target.value });
+        const { id, value } = e.target;
+        setFormData({ ...formData, [id]: value });
+
+        // Set input error state to false when user starts typing
+        if (value.trim() !== '') {
+            setInputErrors({ ...inputErrors, [id]: false });
+        }
     };
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-    
+
+        // Validate inputs
+        const newInputErrors = {
+            username: !formData.username.trim(),
+            email: !formData.email.trim(),
+            password: !formData.password.trim(),
+        };
+
+        setInputErrors(newInputErrors);
+
+        // Check if there are any errors
+        if (Object.values(newInputErrors).some(error => error)) {
+            return; // Prevent submission if there are errors
+        }
+
         try {
             const res = await fetch('http://localhost:4010/api/auth/signup', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify(formData),
             });
-    
+
             const data = await res.json();
-    
+
             if (res.ok) {
-                alert(data.message); // Notify user on success
+                setModalMessage(data.message); // Set success message
+                setModalOpen(true); // Open modal
             } else {
-                alert(data.message || 'Something went wrong. Please try again.');
+                setModalMessage(data.message || 'Something went wrong. Please try again.');
+                setModalOpen(true); // Open modal
             }
         } catch (error) {
             console.error('Error during sign-up:', error);
-            alert('An error occurred. Please try again.');
+            setModalMessage('An error occurred. Please try again.');
+            setModalOpen(true); // Open modal
         }
     };
 
     return (
-        <div className="flex flex-col justify-center items-center min-h-screen bg-gray-100 p-4">
+        <div className="flex flex-col justify-center items-center bg-gray-100 p-4">
             <h1 className="text-3xl font-bold text-center text-gray-800 my-7">
                 Create a new account with us
             </h1>
@@ -51,7 +80,7 @@ function SignUp() {
                         value={formData.username}
                         onChange={handleChange}
                         placeholder="username"
-                        className="p-3 bg-gray-50 border rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500"
+                        className={`p-3 bg-gray-50 border rounded-xl focus:outline-none focus:ring-1 ${inputErrors.username ? 'border-red-500' : 'border-green-500'}`}
                     />
                 </div>
 
@@ -65,7 +94,7 @@ function SignUp() {
                         value={formData.email}
                         onChange={handleChange}
                         placeholder="example@example.com"
-                        className="p-3 bg-gray-50 border rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500"
+                        className={`p-3 bg-gray-50 border rounded-xl focus:outline-none focus:ring-1 ${inputErrors.email ? 'border-red-500' : 'border-green-500'}`}
                     />
                 </div>
 
@@ -73,30 +102,45 @@ function SignUp() {
                     <label htmlFor="password" className="text-gray-700 font-medium">
                         Password:
                     </label>
-                    <input
-                        type="password"
-                        id="password"
-                        value={formData.password}
-                        onChange={handleChange}
-                        placeholder="••••••••"
-                        className="p-3 bg-gray-50 border rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500"
-                    />
-                </div>
+                    <div className="relative">
+                        <input
+                            type={showPassword ? "text" : "password"} // Toggle between text and password
+                            id="password"
+                            value={formData.password}
+                            onChange={handleChange}
+                            placeholder="••••••••"
+                            className={`p-3 bg-gray-50 border rounded-xl w-full focus:outline-none focus:ring-1 ${inputErrors.password ? 'border-red-500' : 'border-green- 500'}`}
+                        />
+                        <button
+                            type="button"
+                            onClick={() => setShowPassword(!showPassword)} // Toggle password visibility
+                            className="absolute right-3 top-4 text-gray-900"
+                        >
+                            {showPassword ? <LuEyeClosed /> : <LuEye />}
+                        </button>
+                    </div>
+                </div>    
 
-                <button
-                    type="submit"
-                    className="mt-5 p-3 bg-blue-500 text-white font-semibold rounded-2xl hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
-                >
-                    Sign Up
-                </button>
+                    <button
+                        type="submit"
+                        className="mt-5 p-3 bg-blue-500 text-white font-semibold rounded-2xl hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
+                    >
+                        Sign Up
+                    </button>
 
-                <div className="flex gap-2 justify-center mt-4 text-gray-600">
-                    <p>Have an account?</p>
-                    <Link to="/sign-in" className="text-blue-500 hover:underline">
-                        Sign in here
-                    </Link>
-                </div>
+                    <div className="flex gap-2 justify-center mt-4 text-gray-600">
+                        <p>Have an account?</p>
+                        <Link to="/sign-in" className="text-blue-500 hover:underline">
+                            Sign in here
+                        </Link>
+                    </div>
             </form>
+
+            <Modal
+                isOpen={modalOpen}
+                onClose={() => setModalOpen(false)}
+                message={modalMessage}
+            />
         </div>
     );
 }
