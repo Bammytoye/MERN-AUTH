@@ -64,7 +64,7 @@ function SignUp() {
     };
 
     return (
-        <div className="flex flex-col justify-center items-center bg-gray-100 min-h-screen">
+        <div className="flex flex-col  items-center bg-gray-100">
             <h1 className="text-3xl font-bold text-center text-gray-800 my-7">
                 Create a new account with us
             </h1>
@@ -144,13 +144,13 @@ function SignUp() {
                     }`}
                     disabled={loading} 
                 >
-                    {loading ? 'Loading...' : 'Sign Up'}
+                    {loading ? 'Loading...' : 'Register'}
                 </button>
 
                 <div className="flex gap-2 justify-center mt-4 text-gray-600">
                     <p>Have an account?</p>
                     <Link to="/sign-in" className="text-blue-500 hover:underline">
-                        Sign in here
+                        Log in here
                     </Link>
                 </div>
             </form>
