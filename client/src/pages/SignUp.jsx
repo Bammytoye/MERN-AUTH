@@ -1,14 +1,12 @@
 import { useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { LuEye, LuEyeClosed } from "react-icons/lu";
-import Modal from '../components/Modal';
 
 function SignUp() {
-    const [formData, setFormData] = useState({ username: '', email: '', password: '' });
+    const [formData, setFormData] = useState({ username: "", email: "", password: "" });
     const [showPassword, setShowPassword] = useState(false);
-    const [modalOpen, setModalOpen] = useState(false);
-    const [modalMessage, setModalMessage] = useState('');
-    const [inputErrors, setInputErrors] = useState({ username: '', email: '', password: '' });
+    const [inputErrors, setInputErrors] = useState({ username: "", email: "", password: "" });
+    const navigate = useNavigate();
     const [loading, setLoading] = useState(false);
 
     const handleChange = (e) => {
@@ -16,7 +14,7 @@ function SignUp() {
         setFormData({ ...formData, [id]: value });
 
         // Clear specific input error message when user starts typing
-        setInputErrors((prevErrors) => ({ ...prevErrors, [id]: '' }));
+        setInputErrors((prevErrors) => ({ ...prevErrors, [id]: "" }));
     };
 
     const handleSubmit = async (e) => {
@@ -24,9 +22,9 @@ function SignUp() {
 
         // Validate inputs
         const newInputErrors = {
-            username: formData.username.trim() ? '' : 'Username is required.',
-            email: formData.email.trim() ? '' : 'Email is required.',
-            password: formData.password.trim() ? '' : 'Password is required.',
+            username: formData.username.trim() ? "" : "Username is required.",
+            email: formData.email.trim() ? "" : "Email is required.",
+            password: formData.password.trim() ? "" : "Password is required.",
         };
 
         setInputErrors(newInputErrors);
@@ -39,9 +37,9 @@ function SignUp() {
         setLoading(true); // Set loading to true when submission starts
 
         try {
-            const res = await fetch('http://localhost:4010/api/auth/signup', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
+            const res = await fetch("http://localhost:4010/api/auth/signup", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
                 body: JSON.stringify(formData),
             });
 
@@ -49,22 +47,19 @@ function SignUp() {
             setLoading(false); // Set loading to false after response
 
             if (res.ok) {
-                setModalMessage(data.message || 'Account created successfully!');
-                setModalOpen(true); // Open modal with success message
+                navigate("/sign-in"); // Redirect to the sign-in page
             } else {
-                setModalMessage(data.message || 'Something went wrong. Please try again.');
-                setModalOpen(true); // Open modal with error message
+                alert(data.message || "Something went wrong. Please try again.");
             }
         } catch (error) {
-            console.error('Error during sign-up:', error);
-            setModalMessage('An error occurred. Please try again.');
-            setModalOpen(true); // Open modal with error message
+            console.error("Error during sign-up:", error);
+            alert("An error occurred. Please try again.");
             setLoading(false);
         }
     };
 
     return (
-        <div className="flex flex-col  items-center bg-gray-100">
+        <div className="flex flex-col items-center bg-gray-100">
             <h1 className="text-3xl font-bold text-center text-gray-800 my-7">
                 Create a new account with us
             </h1>
@@ -85,7 +80,7 @@ function SignUp() {
                         onChange={handleChange}
                         placeholder="Enter your username"
                         className={`p-3 bg-gray-50 border rounded-xl focus:outline-none focus:ring-1 ${
-                            inputErrors.username ? 'border-red-500' : 'border-green-500'
+                            inputErrors.username ? "border-red-500" : "border-gray-300"
                         }`}
                     />
                     {inputErrors.username && <p className="text-red-500 text-sm">{inputErrors.username}</p>}
@@ -103,7 +98,7 @@ function SignUp() {
                         onChange={handleChange}
                         placeholder="example@example.com"
                         className={`p-3 bg-gray-50 border rounded-xl focus:outline-none focus:ring-1 ${
-                            inputErrors.email ? 'border-red-500' : 'border-green-500'
+                            inputErrors.email ? "border-red-500" : "border-gray-300"
                         }`}
                     />
                     {inputErrors.email && <p className="text-red-500 text-sm">{inputErrors.email}</p>}
@@ -122,7 +117,7 @@ function SignUp() {
                             onChange={handleChange}
                             placeholder="••••••••"
                             className={`p-3 bg-gray-50 border rounded-xl w-full focus:outline-none focus:ring-1 ${
-                                inputErrors.password ? 'border-red-500' : 'border-green-500'
+                                inputErrors.password ? "border-red-500" : "border-gray-300"
                             }`}
                         />
                         <button
@@ -140,11 +135,11 @@ function SignUp() {
                 <button
                     type="submit"
                     className={`mt-5 p-3 bg-blue-500 text-white font-semibold rounded-2xl hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 ${
-                        loading ? 'cursor-not-allowed opacity-70' : ''
+                        loading ? "cursor-not-allowed opacity-70" : ""
                     }`}
-                    disabled={loading} 
+                    disabled={loading}
                 >
-                    {loading ? 'Loading...' : 'Register'}
+                    {loading ? "Loading..." : "Register"}
                 </button>
 
                 <div className="flex gap-2 justify-center mt-4 text-gray-600">
@@ -154,13 +149,6 @@ function SignUp() {
                     </Link>
                 </div>
             </form>
-
-            {/* Modal Component */}
-            <Modal
-                isOpen={modalOpen}
-                onClose={() => setModalOpen(false)}
-                message={modalMessage}
-            />
         </div>
     );
 }
