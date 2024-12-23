@@ -1,24 +1,23 @@
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { LuEye, LuEyeClosed } from "react-icons/lu";
+import Modal from '../components/Modal'
+import { AiOutlineLoading3Quarters } from "react-icons/ai";
 
 function SignIn() {
     const [formData, setFormData] = useState({ email: "", password: "" });
     const [showPassword, setShowPassword] = useState(false);
     const [inputErrors, setInputErrors] = useState({});
     const [loading, setLoading] = useState(false);
+    const [modalError, setModalError] = useState({ isOpen: false, title: "", message: "" });
     const navigate = useNavigate();
 
-    // Handle form input changes
     const handleChange = (e) => {
         const { id, value } = e.target;
         setFormData({ ...formData, [id]: value });
-
-        // Clear specific input error when user types
         setInputErrors((prevErrors) => ({ ...prevErrors, [id]: "" }));
     };
 
-    // Validate inputs
     const validateInputs = () => {
         const errors = {};
         if (!formData.email.trim()) errors.email = "Email is required.";
@@ -26,15 +25,13 @@ function SignIn() {
         return errors;
     };
 
-    // Handle form submission
     const handleSubmit = async (e) => {
         e.preventDefault();
 
-        // Perform validation
         const errors = validateInputs();
         setInputErrors(errors);
 
-        if (Object.keys(errors).length > 0) return; // Prevent submission if errors exist
+        if (Object.keys(errors).length > 0) return;
 
         setLoading(true);
 
@@ -51,24 +48,33 @@ function SignIn() {
             if (res.ok) {
                 navigate("/"); // Redirect on successful login
             } else {
-                alert(data.message || "Invalid credentials. Please try again.");
+                setModalError({
+                    isOpen: true,
+                    title: "Login Failed",
+                    message: data.message || "Invalid credentials. Please try again.",
+                });
             }
         } catch (error) {
-            console.error("Error during login:", error);
-            alert("An error occurred. Please try again.");
             setLoading(false);
+            setModalError({
+                isOpen: true,
+                title: "Network Error",
+                message:
+                    error.message === "Failed to fetch"
+                        ? "Please check your internet connection and try again."
+                        : "An unexpected error occurred. Please try again.",
+            });
         }
     };
 
     return (
-        <div className="flex flex-col items-center bg-gray-100 h-screen justify-center">
+        <div className="flex flex-col items-center bg-gray-100 h-[80vh]">
             <h1 className="text-3xl font-bold text-center text-gray-800 mb-7">Log In</h1>
 
             <form
                 onSubmit={handleSubmit}
                 className="flex flex-col gap-5 p-8 bg-white text-black rounded-lg shadow-lg w-full max-w-lg"
             >
-                {/* Email Input */}
                 <div className="flex flex-col gap-1">
                     <label htmlFor="email" className="text-gray-700 font-medium">
                         Email:
@@ -88,7 +94,6 @@ function SignIn() {
                     )}
                 </div>
 
-                {/* Password Input */}
                 <div className="flex flex-col gap-1">
                     <label htmlFor="password" className="text-gray-700 font-medium">
                         Password:
@@ -117,7 +122,6 @@ function SignIn() {
                     )}
                 </div>
 
-                {/* Submit Button */}
                 <button
                     type="submit"
                     className={`mt-5 p-3 bg-blue-500 text-white font-semibold rounded-2xl hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 ${
@@ -125,10 +129,9 @@ function SignIn() {
                     }`}
                     disabled={loading}
                 >
-                    {loading ? "Loading..." : "Log In"}
+                    {loading ? <AiOutlineLoading3Quarters className="animate-spin mx-auto" /> : "Log In"}
                 </button>
 
-                {/* Registration Redirect */}
                 <div className="flex gap-2 justify-center mt-4 text-gray-600">
                     <p>Don&#39;t have an account?</p>
                     <Link to="/sign-up" className="text-blue-500 hover:underline">
@@ -136,6 +139,14 @@ function SignIn() {
                     </Link>
                 </div>
             </form>
+
+            {/* Error Modal */}
+            <Modal
+                isOpen={modalError.isOpen}
+                onClose={() => setModalError({ isOpen: false, title: "", message: "" })}
+                title={modalError.title}
+                message={modalError.message}
+            />
         </div>
     );
 }

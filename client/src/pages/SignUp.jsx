@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { LuEye, LuEyeClosed } from "react-icons/lu";
+import { AiOutlineLoading3Quarters } from "react-icons/ai";
 
 function SignUp() {
     const [formData, setFormData] = useState({ username: "", email: "", password: "" });
@@ -20,11 +21,23 @@ function SignUp() {
     const handleSubmit = async (e) => {
         e.preventDefault();
 
+        // Validation regex patterns
+        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/; // Validates email format
+        const passwordRegex = /^(?=.*[A-Z])(?=.*\d)[A-Za-z\d]{4,}$/; // Validates password (at least 4 characters, 1 uppercase, 1 number)
+
         // Validate inputs
         const newInputErrors = {
             username: formData.username.trim() ? "" : "Username is required.",
-            email: formData.email.trim() ? "" : "Email is required.",
-            password: formData.password.trim() ? "" : "Password is required.",
+            email: formData.email.trim()
+                ? emailRegex.test(formData.email)
+                    ? ""
+                    : "Invalid email format."
+                : "Email is required.",
+            password: formData.password.trim()
+                ? passwordRegex.test(formData.password)
+                    ? ""
+                    : "Password must be at least 4 characters long, include at least one number and one uppercase letter."
+                : "Password is required.",
         };
 
         setInputErrors(newInputErrors);
@@ -59,7 +72,7 @@ function SignUp() {
     };
 
     return (
-        <div className="flex flex-col items-center bg-gray-100">
+        <div className="flex flex-col items-center bg-gray-100 min-h-screen justify-center">
             <h1 className="text-3xl font-bold text-center text-gray-800 my-7">
                 Create a new account with us
             </h1>
@@ -83,7 +96,9 @@ function SignUp() {
                             inputErrors.username ? "border-red-500" : "border-gray-300"
                         }`}
                     />
-                    {inputErrors.username && <p className="text-red-500 text-sm">{inputErrors.username}</p>}
+                    {inputErrors.username && (
+                        <p className="text-red-500 text-sm">{inputErrors.username}</p>
+                    )}
                 </div>
 
                 {/* Email Input */}
@@ -101,7 +116,9 @@ function SignUp() {
                             inputErrors.email ? "border-red-500" : "border-gray-300"
                         }`}
                     />
-                    {inputErrors.email && <p className="text-red-500 text-sm">{inputErrors.email}</p>}
+                    {inputErrors.email && (
+                        <p className="text-red-500 text-sm">{inputErrors.email}</p>
+                    )}
                 </div>
 
                 {/* Password Input */}
@@ -128,7 +145,9 @@ function SignUp() {
                             {showPassword ? <LuEyeClosed /> : <LuEye />}
                         </button>
                     </div>
-                    {inputErrors.password && <p className="text-red-500 text-sm">{inputErrors.password}</p>}
+                    {inputErrors.password && (
+                        <p className="text-red-500 text-sm">{inputErrors.password}</p>
+                    )}
                 </div>
 
                 {/* Submit Button */}
@@ -139,7 +158,7 @@ function SignUp() {
                     }`}
                     disabled={loading}
                 >
-                    {loading ? "Loading..." : "Register"}
+                    {loading ? <AiOutlineLoading3Quarters className="animate-spin mx-auto" /> : "Sign Up"}
                 </button>
 
                 <div className="flex gap-2 justify-center mt-4 text-gray-600">
