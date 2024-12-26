@@ -8,6 +8,7 @@ import Profile from "./pages/Profile"
 
 // components
 import Header from "./components/Header"
+import Footer from './components/Footer'
 
 function App() {
 
@@ -21,6 +22,7 @@ function App() {
         <Route path="/sign-up" element={<SignUp />} />
         <Route path="/profile" element={<Profile />} />
       </Routes>
+      <Footer />
     </BrowserRouter>
   )
 }
