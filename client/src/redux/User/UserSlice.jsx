@@ -23,11 +23,6 @@ const userSlice = createSlice({
             state.loading = false;
             state.error = action.payload;
         },
-        // logout(state) {
-        //     state.user = null;
-        //     state.status = 'idle';
-        //     state.error = null;
-        // },
     },
 });
 
