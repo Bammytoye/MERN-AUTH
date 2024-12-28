@@ -128,7 +128,7 @@ function SignIn() {
                         <button
                             type="button"
                             onClick={() => setShowPassword(!showPassword)}
-                            className="absolute right-3 top-3"
+                            className="absolute right-3 top-4"
                         >
                             {showPassword ? <LuEyeClosed /> : <LuEye />}
                         </button>

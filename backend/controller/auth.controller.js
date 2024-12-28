@@ -53,7 +53,7 @@ export const Signin = async (req, res, next) => {
     }
 }
 
-export const google = async (req, res, next) => {
+export const Google = async (req, res, next) => {
     try {
         const user = await User.findOne({ email: req.body.email });
         
@@ -63,15 +63,26 @@ export const google = async (req, res, next) => {
             const expireDate = new Date(Date.now() + 3600000); // 1 hour
             
             // Set the cookie
-            res.cookie('access_token', token, { httpOnly: true, expires: expireDate });
+            res.cookie('access_token', token, { httpOnly: true, expires: expireDate }).status(200).json(rest);
         } else {
+            // Generate a username
+            const baseUsername = req.body.name ? req.body.name.toLowerCase().replace(/\s+/g, '') : 'user';
+            const randomSuffix = Math.floor(Math.random() * 10000); // Generate a random number between 0 and 9999
+            const username = `${baseUsername}_${randomSuffix}`; // Create a username with a random numeric suffix
+
             const generatedPassword = Math.random().toString(36).slice(-8) + Math.random().toString(36).slice(-8); 
             const hashedPassword = bcryptjs.hashSync(generatedPassword, 10);
-            const newUser = new User({ 
-                username: req.body.name, 
+            const newUser  = new User({ 
+                username, // Use the generated username
                 email: req.body.email, 
-                password: hashedPassword 
+                password: hashedPassword,
+                profilePicture: req.body.photo, 
             }); 
+            await newUser .save();
+            const token = jwt.sign({ id: newUser ._id }, process.env.JWT_SECRET);
+            const { password: hashedPassword2, ...rest } = newUser ._doc;
+            const expireDate = new Date(Date.now() + 3600000);
+            res.cookie('access_token', token, { httpOnly: true, expires: expireDate }).status(200).json(rest);
         }
     } catch (error) {
         next(error);
