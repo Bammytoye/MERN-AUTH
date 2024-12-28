@@ -2,6 +2,7 @@ import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { LuEye, LuEyeClosed } from "react-icons/lu";
 import { AiOutlineLoading3Quarters } from "react-icons/ai";
+import OAuth from "../components/OAuth";
 
 function SignUp() {
     const [formData, setFormData] = useState({ username: "", email: "", password: "" });
@@ -160,11 +161,12 @@ function SignUp() {
                 >
                     {loading ? <AiOutlineLoading3Quarters className="animate-spin mx-auto" /> : "Sign Up"}
                 </button>
+                <OAuth />
 
                 <div className="flex gap-2 justify-center mt-4 text-gray-600">
                     <p>Have an account?</p>
                     <Link to="/sign-in" className="text-blue-500 hover:underline">
-                        Log in here
+                        Log in 
                     </Link>
                 </div>
             </form>

@@ -5,6 +5,7 @@ import Modal from '../components/Modal';
 import { AiOutlineLoading3Quarters } from "react-icons/ai";
 import { loginStart, loginSuccess, loginFailure } from "../redux/User/UserSlice";
 import { useDispatch, useSelector } from "react-redux";
+import OAuth from "../components/OAuth";
 
 function SignIn() {
     const [formData, setFormData] = useState({ email: "", password: "" });
@@ -142,6 +143,7 @@ function SignIn() {
                 >
                     {loading ? <AiOutlineLoading3Quarters className="animate-spin mx-auto" /> : "Log In"}
                 </button>
+                <OAuth />
             </form>
 
             {modalError.isOpen && (
