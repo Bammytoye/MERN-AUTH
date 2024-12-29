@@ -161,7 +161,7 @@ function SignIn() {
             )}
 
             <p className="mt-5 text-gray-600">
-                Don&#39;t have an account? <Link to="/signup" className="text-blue-500 underline">Register</Link>
+                Don&#39;t have an account? <Link to="/register" className="text-blue-500 underline">Register</Link>
             </p>
         </div>
     );
