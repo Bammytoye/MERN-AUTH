@@ -5,7 +5,7 @@ function Header() {
     const {currentUser} = useSelector(state => state.user) 
 
     return (
-        <div className="bg-[#242424] text-white border-b-2 border-gray-600 sticky top-0 z-50 shadow-lg">
+        <div className="bg-gray-900 text-white border-b-2 border-gray-600 sticky top-0 z-50 shadow-lg">
             <div className="flex px-32 py-3 justify-between items-center cursor-pointer">
                 <div className="font-bold text-center">
                     <Link to="/">
