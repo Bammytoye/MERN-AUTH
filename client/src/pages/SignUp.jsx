@@ -73,14 +73,14 @@ function SignUp() {
     };
 
     return (
-        <div className="flex flex-col items-center bg-gray-100 justify-center">
+        <div className="flex flex-col items-center justify-center h-[100vh] py-20">
             <h1 className="text-3xl font-bold text-center text-gray-800 my-7">
                 Create a new account with us
             </h1>
 
             <form
                 onSubmit={handleSubmit}
-                className="flex flex-col gap-5 p-8 bg-white text-black rounded-lg shadow-lg w-full max-w-lg"
+                className="flex flex-col gap-5 p-8 bg-white text-black w-full max-w-lg"
             >
                 {/* Username Input */}
                 <div className="flex flex-col gap-1">

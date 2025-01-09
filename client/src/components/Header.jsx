@@ -2,7 +2,8 @@ import { useSelector } from "react-redux"
 import { Link } from "react-router-dom"
 
 function Header() {
-    const {currentUser} = useSelector(state => state.user) 
+    const {currentUser} = useSelector(state => state.user)
+    console.log(currentUser);
 
     return (
         <div className="bg-gray-900 text-white border-b-2 border-gray-600 sticky top-0 z-50 shadow-lg">
@@ -25,7 +26,8 @@ function Header() {
                         <Link to='/profile'>
                             {
                                 currentUser ? (
-                                    <img src={currentUser.profilePicture} alt='profile' 
+                                    <img src={currentUser.profilePicture || '/client/src/profile image.png'} 
+                                    alt='profile' 
                                     className="h-7 w-7 rounded-full object-cover "
                                     /> 
                                 ) : (

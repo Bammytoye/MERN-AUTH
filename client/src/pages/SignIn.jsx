@@ -91,12 +91,12 @@ function SignIn() {
     }, [localError]);
 
     return (
-        <div className="flex flex-col items-center bg-gray-100 h-[80vh]">
+        <div className="flex flex-col items-center h-[100vh] py-20">
             <h1 className="text-3xl font-bold text-center text-gray-800 mb-7">Log In</h1>
 
             <form
                 onSubmit={handleSubmit}
-                className="flex flex-col gap-5 p-8 bg-white text-black rounded-lg shadow-lg w-full max-w-lg"
+                className="flex flex-col gap-5 p-8 bg-white text-black w-full max-w-lg"
             >
                 <div className="flex flex-col gap-1">
                     <label htmlFor="email" className="text-gray-700 font-medium">Email:</label>

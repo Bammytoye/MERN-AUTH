@@ -4,7 +4,7 @@ import { useRef, useState } from 'react';
 function Profile() {
     const { currentUser  } = useSelector(state => state.user);
     const fileRef = useRef(null);
-    const [image, setImage] = useState(undefined);
+    const [isImage, setImage] = useState(undefined);
     const [errorMessage, setErrorMessage] = useState('');
     const [successMessage, setSuccessMessage] = useState('');
 
@@ -50,7 +50,7 @@ function Profile() {
                     onChange={handleFileChange} // Handle file change
                 />
                 <img 
-                    src={image || currentUser .profilePicture} // Show uploaded image or default profile picture
+                    src={isImage || currentUser.profilePicture} // Show uploaded image or default profile picture
                     alt="Profile Picture"
                     className="h-24 w-24 self-center cursor-pointer rounded-full object-cover"
                     onClick={() => fileRef.current.click()} // Trigger file input click
