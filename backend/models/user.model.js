@@ -20,7 +20,7 @@ const userSchema = new mongoose.Schema({
 
     profilePicture: {
         type: String,
-        default: "https://uxwing.com/wp-content/themes/uxwing/download/peoples-avatars/default-profile-picture-male-icon.png",
+        default: "https://e7.pngegg.com/pngimages/442/477/png-clipart-computer-icons-user-profile-avatar-profile-heroes-profile.png",
     }
 }, {timestamps: true});
 
