@@ -14,6 +14,6 @@ export const verifyToken = (req, res, next) => {
         }
 
         req.user = decoded; // Attach the decoded token (user data) to the request object
-        next();
+        next(); //serious
     });
 };
