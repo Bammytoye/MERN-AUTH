@@ -61,12 +61,12 @@ function SignUp() {
             setLoading(false); // Set loading to false after response
 
             if (res.ok) {
-                navigate("/sign-in"); // Redirect to the sign-in page
+                navigate("/login"); // Redirect to the sign-in page
             } else {
                 alert(data.message || "Something went wrong. Please try again.");
             }
         } catch (error) {
-            console.error("Error during sign-up:", error);
+            console.error("Error during register:", error);
             alert("An error occurred. Please try again.");
             setLoading(false);
         }
