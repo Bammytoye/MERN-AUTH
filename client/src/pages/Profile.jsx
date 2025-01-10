@@ -49,7 +49,7 @@ function Profile() {
         // Handle form submission
         try {
             dispatch(updateUserStart())
-            const res = await fetch(`http://localhost:4010/api/users/update/${currentUser._id}`, {
+            const res = await fetch(`/api/user/update/${currentUser._id}`, {
                 method: 'POST',
                 header: {   
                     'Content-Type': 'application/json'

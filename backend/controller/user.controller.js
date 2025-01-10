@@ -17,13 +17,20 @@ export const updateUser = async (req, res, next) => {
 
         // Handle password hashing if it’s being updated
         if (req.body.password) {
-            req.body.password = bcrypt.hashSync(req.body.password, 12);
+            req.body.password = bcryptjs.hashSync(req.body.password, 12);
         }
 
         // Update user
         const updatedUser = await User.findByIdAndUpdate(
             req.params.id,
-            { $set: req.body },
+            { 
+                $set: {
+                    username: req.body.username,
+                    email: req.body.email,
+                    password: req.body.password,
+                    profilePicture: req.body.profilePicture,
+                } 
+            },
             { new: true } // Return the updated user
         );
 

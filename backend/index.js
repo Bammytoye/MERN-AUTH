@@ -29,7 +29,7 @@ mongoose.connect(process.env.MONGO_URI, {})
 });
 
 // Middleware for user and auth routes
-app.use('/api/users', userRoutes);
+app.use('/api/user', userRoutes);
 app.use('/api/auth', authRoutes);
 
 // Error handling middleware
