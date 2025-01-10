@@ -63,7 +63,7 @@ function SignUp() {
             if (res.ok) {
                 navigate("/login"); // Redirect to the sign-in page
             } else {
-                alert(data.message || "Something went wrong. Please try again.");
+                alert(data.message || "Something went wrong. Please try again!!!");
             }
         } catch (error) {
             console.error("Error during register:", error);
