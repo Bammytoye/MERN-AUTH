@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { LuEye, LuEyeClosed } from "react-icons/lu";
-import Modal from '../components/Modal';
+import Modal from "../components/Modal";
 import { AiOutlineLoading3Quarters } from "react-icons/ai";
 import { loginStart, loginSuccess, loginFailure } from "../redux/User/UserSlice";
 import { useDispatch, useSelector } from "react-redux";
@@ -12,7 +12,7 @@ function SignIn() {
     const [showPassword, setShowPassword] = useState(false);
     const { loading } = useSelector((state) => state.user);
     const [modalError, setModalError] = useState({ isOpen: false, title: "", message: "" });
-    const [localError, setLocalError] = useState(""); // Local error state
+    const [localError, setLocalError] = useState("");
     const navigate = useNavigate();
     const dispatch = useDispatch();
 
@@ -35,8 +35,8 @@ function SignIn() {
         if (Object.keys(errors).length > 0) {
             setModalError({
                 isOpen: true,
-                title: 'Input Error',
-                message: Object.values(errors).join(' ')
+                title: "Input Error",
+                message: Object.values(errors).join(" "),
             });
             return;
         }
@@ -52,8 +52,14 @@ function SignIn() {
 
             const data = await res.json();
 
-            if (res.ok) {
-                dispatch(loginSuccess(data));
+            if (data.ok && data.success) {
+                localStorage.setItem("token", data.token);
+                dispatch(
+                    loginSuccess({
+                        user: data.user,
+                        token: data.token,
+                    })
+                );
                 navigate("/");
             } else {
                 dispatch(loginFailure(data.message || "Invalid credentials. Please try again."));
@@ -62,31 +68,27 @@ function SignIn() {
                     title: "Login Failed",
                     message: data.message || "Invalid credentials. Please try again.",
                 });
-                setLocalError(data.message || "Invalid credentials. Please try again."); // Set local error
             }
         } catch (error) {
-            // Handle network errors
-            const errorMessage = error.message === "Failed to fetch"
-                ? "Please check your internet connection and try again."
-                : "An unexpected error occurred. Please try again.";
+            const errorMessage =
+                error.message === "Failed to fetch"
+                    ? "Please check your internet connection and try again."
+                    : "An unexpected error occurred. Please try again.";
             dispatch(loginFailure(errorMessage));
             setModalError({
                 isOpen: true,
                 title: "Network Error",
                 message: errorMessage,
             });
-            setLocalError(errorMessage); // Set local error for display
         }
     };
 
-    // Effect to clear the local error after a delay
     useEffect(() => {
         if (localError) {
             const timer = setTimeout(() => {
-                setLocalError(""); // Clear the local error after 5 seconds
-            }, 5000); // Adjust the duration as needed (5000 ms = 5 seconds)
-
-            return () => clearTimeout(timer); // Cleanup the timer on unmount or when localError changes
+                setLocalError("");
+            }, 5000);
+            return () => clearTimeout(timer);
         }
     }, [localError]);
 
@@ -99,21 +101,25 @@ function SignIn() {
                 className="flex flex-col gap-5 p-8 bg-white text-black w-full max-w-lg"
             >
                 <div className="flex flex-col gap-1">
-                    <label htmlFor="email" className="text-gray-700 font-medium">Email:</label>
+                    <label htmlFor="email" className="text-gray-700 font-medium">
+                        Email:
+                    </label>
                     <input
                         type="email"
                         id="email"
                         value={formData.email}
-                        onChange= {handleChange}
+                        onChange={handleChange}
                         placeholder="example@example.com"
                         className={`p-3 bg-gray-50 border rounded-xl focus:outline-none focus:ring-1 ${
-                            localError && localError.includes('Email') ? "border-red-500" : "border-gray-300"
+                            modalError.message.includes("Email") ? "border-red-500" : "border-gray-300"
                         }`}
                     />
                 </div>
 
                 <div className="flex flex-col gap-1">
-                    <label htmlFor="password" className="text-gray-700 font-medium">Password:</label>
+                    <label htmlFor="password" className="text-gray-700 font-medium">
+                        Password:
+                    </label>
                     <div className="relative">
                         <input
                             type={showPassword ? "text" : "password"}
@@ -122,7 +128,7 @@ function SignIn() {
                             onChange={handleChange}
                             placeholder="••••••••"
                             className={`p-3 bg-gray-50 border w-full rounded-xl focus:outline-none focus:ring-1 ${
-                                localError && localError.includes('Password') ? "border-red-500" : "border-gray-300"
+                                modalError.message.includes("Password") ? "border-red-500" : "border-gray-300"
                             }`}
                         />
                         <button
@@ -154,11 +160,7 @@ function SignIn() {
                 />
             )}
 
-            {localError && (
-                <p className='text-red-700 italic'>
-                    {localError}
-                </p>
-            )}
+            {localError && <p className="text-red-700 italic">{localError}</p>}
 
             <p className="mt-5 text-gray-600">
                 Don&#39;t have an account? <Link to="/register" className="text-blue-500 underline">Register</Link>

@@ -2,8 +2,9 @@ import { createSlice } from '@reduxjs/toolkit';
 
 const initialState = {
     currentUser: null,
+    token: null,
     loading: false,
-    error: false,
+    error: null,
 };
 
 const userSlice = createSlice({
@@ -18,6 +19,7 @@ const userSlice = createSlice({
             state.currentUser = action.payload; // Set the current user to the payload
             state.loading = false; // Set loading to false after successful login
             state.error = false; // Clear any previous error
+            localStorage.setItem("token", action.payload.token);
         },
         loginFailure: (state, action) => {
             state.loading = false;

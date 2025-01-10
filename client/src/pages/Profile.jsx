@@ -9,6 +9,7 @@ import {
 function Profile() {
     const dispatch = useDispatch();
     const { currentUser, loading} = useSelector((state) => state.user);
+    console.log("currentUser:", currentUser);
     const fileRef = useRef(null);
     const [formData, setFormData] = useState({});
     const [isImage, setImage] = useState(currentUser?.profilePicture || "");
@@ -75,6 +76,9 @@ function Profile() {
             setSuccessMessage("");
         }
     };
+
+    console.log("Token:", currentUser.token);
+console.log("User ID:", currentUser._id);
 
     return (
         <div className="min-h-screen w-[650px] mx-auto mb-10">

@@ -31,7 +31,7 @@ function Header() {
                                     className="h-7 w-7 rounded-full object-cover "
                                     /> 
                                 ) : (
-                                    <li className="hover:text-gray-400 border-b-2 border-transparent hover:border-gray-400 transition duration-200">Sign In</li>
+                                    <li className="hover:text-gray-400 border-b-2 border-transparent hover:border-gray-400 transition duration-200">Log In</li>
                                 )
                             }
                         </Link>

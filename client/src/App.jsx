@@ -11,7 +11,22 @@ import Header from "./components/Header"
 import Footer from './components/Footer'
 import PrivateRoute from "./components/PrivateRoute"
 
+import { useEffect } from "react";
+import { useDispatch } from "react-redux";
+import { loginSuccess } from "../src/redux/User/UserSlice";
+
 function App() {
+
+  const dispatch = useDispatch();
+
+    useEffect(() => {
+        const token = localStorage.getItem("token");
+        const user = JSON.parse(localStorage.getItem("user")); // Optional: If you store user info
+
+        if (token && user) {
+            dispatch(loginSuccess({ user, token }));
+        }
+    }, [dispatch]);
 
   return (
     <BrowserRouter>
