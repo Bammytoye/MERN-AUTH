@@ -1,12 +1,16 @@
-import { useSelector } from "react-redux";
+import { useSelector, useDispatch } from "react-redux";
 import { useRef, useState } from 'react';
+import { updateUserStart, updateUserSuccess, updateUserFailure } from '../redux/User/UserSlice'
+
 
 function Profile() {
+    const dispatch = useDispatch()
     const { currentUser  } = useSelector(state => state.user);
     const fileRef = useRef(null);
     const [isImage, setImage] = useState(undefined);
     const [errorMessage, setErrorMessage] = useState('');
     const [successMessage, setSuccessMessage] = useState('');
+    const [formData, setFormData ] = useState({})
 
     // Function to handle file selection
     const handleFileChange = (e) => {
@@ -35,13 +39,44 @@ function Profile() {
         }
     };
 
+    const handleChange = (e) => {
+        setFormData({...formData, [e.target.id]: e.target.value});
+    }
+
+    const handleSubmit = async (e) => {
+        e.preventDefault();
+
+        // Handle form submission
+        try {
+            dispatch(updateUserStart())
+            const res = await fetch(`http://localhost:4010/api/users/update/${currentUser._id}`, {
+                method: 'POST',
+                header: {   
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(formData),
+            });
+            const data = await res.json()
+            if (data.success === false) {
+                dispatch(updateUserFailure(data))
+                return;
+            }
+            dispatch(updateUserSuccess(data));
+        } catch (error) {
+            dispatch(updateUserFailure(error)) 
+        }
+    }
+
     return (
         <div className="min-h-screen w-[650px] mx-auto mb-10">
             <h1 className="text-3xl font-semibold text-center my-7">
                 Profile
             </h1>
 
-            <form action="" className="flex flex-col gap-6">
+            <form action="" 
+                className="flex flex-col gap-6"
+                onSubmit={handleSubmit}
+                >
                 <input 
                     type="file" 
                     ref={fileRef} 
@@ -67,6 +102,7 @@ function Profile() {
                         id="username" 
                         placeholder="Username" 
                         className="outline-none bg-gray-100 rounded-lg p-3"
+                        onChange={handleChange}
                     />
                 </div>
 
@@ -78,6 +114,7 @@ function Profile() {
                         id="email" 
                         placeholder="Email" 
                         className="outline-none bg-gray-100 rounded-lg p-3"
+                        onChange={handleChange}
                     />
                 </div>
 
@@ -88,6 +125,7 @@ function Profile() {
                         id="Password" 
                         placeholder="******" 
                         className="outline-none bg-gray-100 rounded-lg p-3"
+                        onChange={handleChange}
                     />
                 </div>
 
