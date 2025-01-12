@@ -47,12 +47,11 @@ const userSlice = createSlice({
             state.loading = false; // Set loading to false if update fails
             state.error = action.payload; // Store error from the update
         },
-        // Optionally, you can add a logout action here
-        // logout: (state) => {
-        //     state.currentUser = null; // Clear current user
-        //     state.loading = false;
-        //     state.error = false;
-        // },
+        logout: (state) => {
+            state.currentUser = null; // Clear current user
+            state.loading = false;
+            state.error = false;
+        },
     },
 });
 
@@ -66,7 +65,7 @@ export const {
     deleteUserFailure,
     deleteUserStart,
     deleteUserSuccess,
-    // logout
+    logout,
 } = userSlice.actions;
 
 export default userSlice.reducer;

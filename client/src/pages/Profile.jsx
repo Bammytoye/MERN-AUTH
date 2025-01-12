@@ -1,6 +1,6 @@
 import { useSelector, useDispatch } from "react-redux";
 import { useRef, useState } from 'react';
-import { updateUserStart, updateUserSuccess, updateUserFailure, deleteUserFailure, deleteUserStart, deleteUserSuccess } from '../redux/User/UserSlice';
+import { updateUserStart, updateUserSuccess, updateUserFailure, deleteUserFailure, deleteUserStart, deleteUserSuccess, logout } from '../redux/User/UserSlice';
 
 function Profile() {
     const dispatch = useDispatch();
@@ -47,8 +47,6 @@ function Profile() {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-
-        // Handle form submission
         try {
             dispatch(updateUserStart());
             const res = await fetch(`/api/user/update/${currentUser._id}`, {  // Check this endpoint
@@ -104,6 +102,37 @@ function Profile() {
             setTimeout(() => setErrorMessage(''), 5000); // Clear error after 5 seconds
         }
     };
+
+    const handleSignOut = async () => {
+        try {
+            const res = await fetch('/api/auth/signOut', {
+                method: 'POST', 
+            });
+            
+            if (!res.ok) {
+                throw new Error('Failed to log out, server error');
+            }
+    
+            const data = await res.json();
+    
+            if (data.success === false) {
+                setErrorMessage('Failed to logout');
+                setSuccessMessage('');
+                setTimeout(() => setErrorMessage(''), 5000); // Clear error after 5 seconds
+                return;
+            }
+    
+            dispatch(logout()); // Dispatch logout action only if successful
+            setSuccessMessage('Successfully logged out');
+            setTimeout(() => setSuccessMessage(''), 5000); // Clear success message after 5 seconds
+    
+        } catch (error) {
+            console.log(error);
+            setErrorMessage('An unexpected error occurred');
+            setTimeout(() => setErrorMessage(''), 5000); // Clear error after 5 seconds
+        }
+    };
+    
 
     return (
         <div className="min-h-screen w-[650px] mx-auto mb-10">
@@ -176,7 +205,7 @@ function Profile() {
 
             <div className="flex justify-between mt-5">
                 <span onClick={handleDelete} className="text-red-700 cursor-pointer">Delete Account</span>
-                <span className="text-red-700 cursor-pointer">Sign Out</span>
+                <span onClick={handleSignOut} className="text-red-700 cursor-pointer">Sign Out</span>
             </div>
         </div>
     );
