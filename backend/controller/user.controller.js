@@ -10,12 +10,12 @@ export const test = (req, res) => {
 
 export const updateUser = async (req, res, next) => {
     try {
-        // Check if the user is authorized to update
+        
         if (req.user.id !== req.params.id) {
             return next(errorHandler(401, "You can only update your account!"));
         }
 
-        // Handle password hashing if it’s being updated
+        
         if (req.body.password) {
             req.body.password = bcryptjs.hashSync(req.body.password, 12);
         }
@@ -31,12 +31,25 @@ export const updateUser = async (req, res, next) => {
                     profilePicture: req.body.profilePicture,
                 } 
             },
-            { new: true } // Return the updated user
+            { new: true } 
         );
 
-        const { password, ...rest } = updatedUser._doc; // Exclude the password
+        const { password, ...rest } = updatedUser._doc; 
         res.status(200).json(rest);
     } catch (err) {
-        next(err); // Handle errors
+        next(err); 
     }
 };
+
+export const updateDelete = async (req, res, next) => {
+    if (req.user.id !== req.params.id) {
+        return next(errorHandler(401, 'You can delete only your account'))
+    }
+    try {
+        await User.findByIdAndDelete(req.params.id);
+        res.status(200).json('User has been deleted...')
+    }
+    catch (error) {
+        next(error);    
+    }
+}  

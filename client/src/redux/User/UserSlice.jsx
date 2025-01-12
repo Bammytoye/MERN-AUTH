@@ -35,6 +35,18 @@ const userSlice = createSlice({
             state.loading = false; // Set loading to false if update fails
             state.error = action.payload; // Store error from the update
         },
+        deleteUserStart: (state) => {
+            state.loading = true; // Set loading to true when updating user
+        },
+        deleteUserSuccess: (state) => {
+            state.currentUser = null; // Update the current user with the new data
+            state.loading = false; // Set loading to false after successful update
+            state.error = false; // Clear any previous error
+        },
+        deleteUserFailure: (state, action) => {
+            state.loading = false; // Set loading to false if update fails
+            state.error = action.payload; // Store error from the update
+        },
         // Optionally, you can add a logout action here
         // logout: (state) => {
         //     state.currentUser = null; // Clear current user
@@ -51,6 +63,9 @@ export const {
     updateUserStart,
     updateUserSuccess,
     updateUserFailure, 
+    deleteUserFailure,
+    deleteUserStart,
+    deleteUserSuccess,
     // logout
 } = userSlice.actions;
 

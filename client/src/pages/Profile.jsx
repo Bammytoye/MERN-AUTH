@@ -1,16 +1,15 @@
 import { useSelector, useDispatch } from "react-redux";
 import { useRef, useState } from 'react';
-import { updateUserStart, updateUserSuccess, updateUserFailure } from '../redux/User/UserSlice'
-
+import { updateUserStart, updateUserSuccess, updateUserFailure, deleteUserFailure, deleteUserStart, deleteUserSuccess } from '../redux/User/UserSlice';
 
 function Profile() {
-    const dispatch = useDispatch()
-    const { currentUser  } = useSelector(state => state.user);
+    const dispatch = useDispatch();
+    const { currentUser } = useSelector(state => state.user);
     const fileRef = useRef(null);
     const [isImage, setImage] = useState(undefined);
     const [errorMessage, setErrorMessage] = useState('');
     const [successMessage, setSuccessMessage] = useState('');
-    const [formData, setFormData ] = useState({})
+    const [formData, setFormData] = useState({});
 
     // Function to handle file selection
     const handleFileChange = (e) => {
@@ -23,12 +22,14 @@ function Profile() {
             if (!validTypes.includes(file.type)) {
                 setErrorMessage('Invalid file type. Please upload a JPEG, PNG, or GIF image.');
                 setSuccessMessage('');
+                setTimeout(() => setErrorMessage(''), 5000); // Clear error after 5 seconds
                 return;
             }
 
             if (file.size > maxSize) {
-                setErrorMessage('File size exceeds 2MB. Please upload a smaller image.');
+                setErrorMessage('File size exceeds 10MB. Please upload a smaller image.');
                 setSuccessMessage('');
+                setTimeout(() => setErrorMessage(''), 5000); // Clear error after 5 seconds
                 return;
             }
 
@@ -36,36 +37,73 @@ function Profile() {
             setImage(URL.createObjectURL(file));
             setErrorMessage('');
             setSuccessMessage('Image uploaded successfully!');
+            setTimeout(() => setSuccessMessage(''), 5000); // Clear success after 5 seconds
         }
     };
 
     const handleChange = (e) => {
-        setFormData({...formData, [e.target.id]: e.target.value});
-    }
+        setFormData({ ...formData, [e.target.id]: e.target.value });
+    };
 
     const handleSubmit = async (e) => {
         e.preventDefault();
 
         // Handle form submission
         try {
-            dispatch(updateUserStart())
-            const res = await fetch(`/api/user/update/${currentUser._id}`, {
+            dispatch(updateUserStart());
+            const res = await fetch(`/api/user/update/${currentUser._id}`, {  // Check this endpoint
                 method: 'POST',
-                header: {   
+                headers: {   
                     'Content-Type': 'application/json'
                 },
                 body: JSON.stringify(formData),
             });
-            const data = await res.json()
+            const data = await res.json();
             if (data.success === false) {
-                dispatch(updateUserFailure(data))
+                dispatch(updateUserFailure(data));
+                setErrorMessage('Failed to update user details');
+                setSuccessMessage('');
+                setTimeout(() => setErrorMessage(''), 5000); // Clear error after 5 seconds
                 return;
             }
             dispatch(updateUserSuccess(data));
+            setSuccessMessage('User details updated successfully!');
+            setTimeout(() => setSuccessMessage(''), 5000); // Clear success after 5 seconds
+            setErrorMessage('');
         } catch (error) {
-            dispatch(updateUserFailure(error)) 
+            dispatch(updateUserFailure(error));
+            setErrorMessage('An error occurred while updating.');
+            setSuccessMessage('');
+            setTimeout(() => setErrorMessage(''), 5000); // Clear error after 5 seconds
         }
-    }
+    };
+
+    const handleDelete = async () => {
+        try {
+            dispatch(deleteUserStart());
+            const res = await fetch(`/api/user/delete/${currentUser._id}`, {  // Check this endpoint
+                method: 'DELETE',
+            });
+
+            const data = await res.json();
+            if (data.success === false) {
+                dispatch(deleteUserFailure(data));
+                setErrorMessage('Failed to delete user account');
+                setSuccessMessage('');
+                setTimeout(() => setErrorMessage(''), 5000); // Clear error after 5 seconds
+                return;
+            }
+            dispatch(deleteUserSuccess(data));
+            setSuccessMessage('User account deleted successfully!');
+            setTimeout(() => setSuccessMessage(''), 5000); // Clear success after 5 seconds
+            setErrorMessage('');
+        } catch (error) {
+            dispatch(deleteUserFailure(error));
+            setErrorMessage('An error occurred while deleting.');
+            setSuccessMessage('');
+            setTimeout(() => setErrorMessage(''), 5000); // Clear error after 5 seconds
+        }
+    };
 
     return (
         <div className="min-h-screen w-[650px] mx-auto mb-10">
@@ -76,7 +114,7 @@ function Profile() {
             <form action="" 
                 className="flex flex-col gap-6"
                 onSubmit={handleSubmit}
-                >
+            >
                 <input 
                     type="file" 
                     ref={fileRef} 
@@ -97,7 +135,7 @@ function Profile() {
                 <div className="flex flex-col gap-1"> 
                     <label htmlFor="">Username:</label>
                     <input 
-                        defaultValue={currentUser .username} 
+                        defaultValue={currentUser.username} 
                         type="text" 
                         id="username" 
                         placeholder="Username" 
@@ -109,7 +147,7 @@ function Profile() {
                 <div className="flex flex-col gap-1">
                     <label htmlFor="">Email:</label>
                     <input 
-                        defaultValue={currentUser .email} 
+                        defaultValue={currentUser.email} 
                         type="email" 
                         id="email" 
                         placeholder="Email" 
@@ -137,7 +175,7 @@ function Profile() {
             </form>
 
             <div className="flex justify-between mt-5">
-                <span className="text-red-700 cursor-pointer">Delete Account</span>
+                <span onClick={handleDelete} className="text-red-700 cursor-pointer">Delete Account</span>
                 <span className="text-red-700 cursor-pointer">Sign Out</span>
             </div>
         </div>
