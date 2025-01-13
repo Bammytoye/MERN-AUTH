@@ -12,7 +12,7 @@ function SignIn() {
     const [showPassword, setShowPassword] = useState(false);
     const { loading } = useSelector((state) => state.user);
     const [modalError, setModalError] = useState({ isOpen: false, title: "", message: "" });
-    const [localError, setLocalError] = useState(""); // Local error state
+    const [localError, setLocalError] = useState(""); 
     const navigate = useNavigate();
     const dispatch = useDispatch();
 
@@ -62,7 +62,7 @@ function SignIn() {
                     title: "Login Failed",
                     message: data.message || "Invalid credentials. Please try again.",
                 });
-                setLocalError(data.message || "Invalid credentials. Please try again."); // Set local error
+                setLocalError(data.message || "Invalid credentials. Please try again."); 
             }
         } catch (error) {
             // Handle network errors
@@ -75,7 +75,7 @@ function SignIn() {
                 title: "Network Error",
                 message: errorMessage,
             });
-            setLocalError(errorMessage); // Set local error for display
+            setLocalError(errorMessage); 
         }
     };
 
@@ -83,20 +83,20 @@ function SignIn() {
     useEffect(() => {
         if (localError) {
             const timer = setTimeout(() => {
-                setLocalError(""); // Clear the local error after 5 seconds
+                setLocalError(""); 
             }, 5000); // Adjust the duration as needed (5000 ms = 5 seconds)
 
-            return () => clearTimeout(timer); // Cleanup the timer on unmount or when localError changes
+            return () => clearTimeout(timer); 
         }
     }, [localError]);
 
     return (
-        <div className="flex flex-col items-center h-[100vh] py-20">
+        <div className="flex flex-col items-center h-[100vh] py-20 px-4">
             <h1 className="text-3xl font-bold text-center text-gray-800 mb-7">Log In</h1>
 
             <form
                 onSubmit={handleSubmit}
-                className="flex flex-col gap-5 p-8 bg-white text-black w-full max-w-lg"
+                className="flex flex-col gap-5 p-8 bg-white text-black w-full max-w-md sm:max-w-lg md:max-w-xl lg:max-w-2xl"
             >
                 <div className="flex flex-col gap-1">
                     <label htmlFor="email" className="text-gray-700 font-medium">Email:</label>
@@ -104,7 +104,7 @@ function SignIn() {
                         type="email"
                         id="email"
                         value={formData.email}
-                        onChange= {handleChange}
+                        onChange={handleChange}
                         placeholder="example@example.com"
                         className={`p-3 bg-gray-50 border rounded-xl focus:outline-none focus:ring-1 ${
                             localError && localError.includes('Email') ? "border-red-500" : "border-gray-300"

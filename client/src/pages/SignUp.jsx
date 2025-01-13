@@ -15,18 +15,15 @@ function SignUp() {
         const { id, value } = e.target;
         setFormData({ ...formData, [id]: value });
 
-        // Clear specific input error message when user starts typing
         setInputErrors((prevErrors) => ({ ...prevErrors, [id]: "" }));
     };
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-
-        // Validation regex patterns
-        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/; // Validates email format
+    
+        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/; 
         const passwordRegex = /^(?=.*[A-Z])(?=.*\d)[A-Za-z\d]{4,}$/; // Validates password (at least 4 characters, 1 uppercase, 1 number)
 
-        // Validate inputs
         const newInputErrors = {
             username: formData.username.trim() ? "" : "Username is required.",
             email: formData.email.trim()
@@ -43,12 +40,11 @@ function SignUp() {
 
         setInputErrors(newInputErrors);
 
-        // Check if there are any validation errors
         if (Object.values(newInputErrors).some((error) => error)) {
-            return; // Prevent form submission if validation fails
+            return; 
         }
 
-        setLoading(true); // Set loading to true when submission starts
+        setLoading(true); 
 
         try {
             const res = await fetch("/api/auth/signup", {
@@ -58,10 +54,10 @@ function SignUp() {
             });
 
             const data = await res.json();
-            setLoading(false); // Set loading to false after response
+            setLoading(false); 
 
             if (res.ok) {
-                navigate("/login"); // Redirect to the sign-in page
+                navigate("/login"); 
             } else {
                 alert(data.message || "Something went wrong. Please try again!!!");
             }
@@ -73,7 +69,7 @@ function SignUp() {
     };
 
     return (
-        <div className="flex flex-col items-center justify-center h-[100vh] py-20">
+        <div className="flex flex-col items-center justify-center h-[90vh] px-4 sm:px-8 md:px-16 lg:px-32">
             <h1 className="text-3xl font-bold text-center text-gray-800 my-7">
                 Create a new account with us
             </h1>
@@ -166,7 +162,7 @@ function SignUp() {
                 <div className="flex gap-2 justify-center mt-4 text-gray-600">
                     <p>Have an account?</p>
                     <Link to="/login" className="text-blue-500 hover:underline">
-                        Log in 
+                        Log in
                     </Link>
                 </div>
             </form>
