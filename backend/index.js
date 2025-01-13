@@ -1,15 +1,15 @@
 import express from 'express';
 import mongoose from 'mongoose'; 
 import dotenv from 'dotenv';
-import cors from 'cors'; // Import CORS
+import cors from 'cors';
 import userRoutes from './routes/user.routes.js';
 import authRoutes from './routes/auth.routes.js';
 import cookieParser from 'cookie-parser';
 import path from 'path';
 
-dotenv.config();
-
 const app = express();
+
+dotenv.config();
 
 const __dirname = path.resolve();
 
@@ -25,9 +25,9 @@ app.use(cookieParser());
 
 // Use CORS middleware
 app.use(cors({
-    origin: 'http://localhost:5173', // Replace with your frontend's URL
-    methods: ['GET', 'POST', 'PUT', 'DELETE'], // Allowed HTTP methods
-    credentials: true // Enable cookies and authentication headers if needed
+    origin: 'http://localhost:5173',
+    methods: ['GET', 'POST', 'PUT', 'DELETE'], 
+    credentials: true 
 }));
 
 mongoose.connect(process.env.MONGO_URI, {})
