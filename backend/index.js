@@ -6,10 +6,10 @@ import userRoutes from './routes/user.routes.js';
 import authRoutes from './routes/auth.routes.js';
 import cookieParser from 'cookie-parser';
 import path from 'path';
-
 const app = express();
 
 dotenv.config();
+
 
 const __dirname = path.resolve();
 
